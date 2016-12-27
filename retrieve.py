@@ -1,5 +1,6 @@
 import json
 import requests
+import os
 
 def getKey():
 	f   = open("apikey", "r")
@@ -13,6 +14,36 @@ def getTotalPosts(url):
 	responseJSON = json.loads(response.text)
 	totalPosts = responseJSON["response"]["total_posts"]
 	return int(totalPosts)
+
+def processPhoto(url, offset):
+	if not os.path.exists("Photos"):
+		os.makedirs("Photos")
+	response = requests.get(url)
+	responseJSON = json.loads(response.text)
+	postCount = offset
+	for post in responseJSON["response"]["posts"]:
+		os.makedirs("Photos/{0}".format(postCount))
+		date = post["date"]
+		tags = post["tags"]
+		caption = post["caption"]
+		f = open("Photos/{0}/info.txt".format(postCount), "a")
+		f.write(date.encode("utf-8"))
+		f.write("\n")
+		f.write(caption.encode("utf-8"))
+		f.write("\n")
+		for tag in tags:
+                        f.write(tag.encode("utf-8"))
+                        f.write(",")
+		f.close()
+		for photo in post["photos"]:
+			img_url = photo["original_size"]["url"]
+			img_url = img_url.replace("https", "http")
+			img_data = requests.get(img_url).content
+			fileName = img_url.split('/')[-1]
+			with open('Photos/{0}/{1}.png'.format(postCount, fileName), 'wb') as handler:
+				handler.write(img_data)
+		postCount += 1
+
 
 def processText(url):
 	f = open("textPosts.txt", "a")
@@ -42,7 +73,6 @@ def processText(url):
 		f.write("--------------\n\n")
 	f.close()
 		
-
 def processQuote(url):
 	f = open("quotes.txt", "a")
 	response = requests.get(url)
@@ -75,7 +105,7 @@ def getAllPosts(baseURL, total, postType):
 		if postType == "text":
 			processText(url)
 		if postType == "photo":
-			processPhoto(url)
+			processPhoto(url, offset)
 		if postType == "quote":
 			processQuote(url)
 		offset += 20
