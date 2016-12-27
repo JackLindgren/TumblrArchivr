@@ -113,12 +113,12 @@ def getAllPosts(baseURL, total, postType):
 blogName = raw_input("enter blog name: ")
 postType = raw_input("enter the post type (text, photo, quote): ")
 APIKey = getKey()
-print APIKey
+#print APIKey
 
 postURL = "https://api.tumblr.com/v2/blog/{0}.tumblr.com/posts/{1}?api_key={2}".format(blogName, postType, APIKey)
 
 totalPosts = getTotalPosts(postURL)
-print totalPosts
+#print totalPosts
 
 getAllPosts(postURL, totalPosts, postType)
 
