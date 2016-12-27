@@ -22,11 +22,11 @@ def processPhoto(url, offset):
 	responseJSON = json.loads(response.text)
 	postCount = offset
 	for post in responseJSON["response"]["posts"]:
-		os.makedirs("Photos/{0}".format(postCount))
 		date = post["date"]
 		tags = post["tags"]
 		caption = post["caption"]
-		f = open("Photos/{0}/info.txt".format(postCount), "a")
+		os.makedirs("Photos/{0}-{1}".format(postCount, date))
+		f = open("Photos/{0}-{1}/info.txt".format(postCount, date), "a")
 		f.write(date.encode("utf-8"))
 		f.write("\n")
 		f.write(caption.encode("utf-8"))
@@ -40,7 +40,7 @@ def processPhoto(url, offset):
 			img_url = img_url.replace("https", "http")
 			img_data = requests.get(img_url).content
 			fileName = img_url.split('/')[-1]
-			with open('Photos/{0}/{1}.png'.format(postCount, fileName), 'wb') as handler:
+			with open('Photos/{0}-{1}/{2}.png'.format(postCount, date, fileName), 'wb') as handler:
 				handler.write(img_data)
 		postCount += 1
 
