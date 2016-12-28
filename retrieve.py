@@ -40,7 +40,7 @@ def processPhoto(url, offset):
 			img_url = img_url.replace("https", "http")
 			img_data = requests.get(img_url).content
 			fileName = img_url.split('/')[-1]
-			with open('Photos/{0}-{1}/{2}.png'.format(postCount, date, fileName), 'wb') as handler:
+			with open('Photos/{0}-{1}/{2}'.format(postCount, date, fileName), 'wb') as handler:
 				handler.write(img_data)
 		postCount += 1
 
